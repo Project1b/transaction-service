@@ -7,10 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document(collection="transaction")
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Document(collection="transaction")
 public class TransactionEntity {
 
 	@Id

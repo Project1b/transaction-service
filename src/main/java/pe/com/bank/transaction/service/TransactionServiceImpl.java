@@ -1,45 +1,49 @@
 package pe.com.bank.transaction.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import lombok.AllArgsConstructor;
 import lombok.var;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import pe.com.bank.transaction.repository.TransactionRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@AllArgsConstructor
+@Service
 public class TransactionServiceImpl implements TransactionService{
 
-	@Autowired
+	
 	TransactionRepository transactionRepository;
 	
-	@Override
+	
 	public Flux<TransactionEntity> getTransactions() {
 		// TODO Auto-generated method stub
 		return transactionRepository.findAll();
 	}
 
-	@Override
+	
 	public Mono<TransactionEntity> getTransactionById(String id) {
 		// TODO Auto-generated method stub
 		return transactionRepository.findById(id);
 	}
 
-	@Override
+	
 	public Mono<TransactionEntity> newTransaction(TransactionEntity transaction) {
 		// TODO Auto-generated method stub
 		return transactionRepository.save(transaction);
 	}
 
-	@Override
+	
 	public Mono<Void> deleteTransactionById(String id) {
 		// TODO Auto-generated method stub
 		return transactionRepository.deleteById(id);
 	}
 
-	@Override
+	
 	public Mono<TransactionEntity> updateTransaction(TransactionEntity transaction, String id) {
 		
 		return transactionRepository.findById(id)
@@ -51,6 +55,22 @@ public class TransactionServiceImpl implements TransactionService{
 				})
 				;
 	}
+
+
+	@Override
+	public Mono<TransactionEntity> getTransactionByNroAccount(String id) {
+		
+		return transactionRepository.findTransactionsEntitiesByAccountNumber(id).last();
+	}
+
+	// Prueba
+	
+	@Override
+	public Flux<TransactionEntity> getTransactionsByNroAccountX(String id) {
+		
+		return transactionRepository.findTransactionsEntitiesByAccountNumber(id);
+	}
+
 	
 	/*
 	 	public Mono<TransactionEntity> update(TransactionEntity transaction, String id) {

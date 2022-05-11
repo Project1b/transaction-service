@@ -19,41 +19,41 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/v1")
 public class TransactionController {
 
 	
 	@Autowired
 	private TransactionService transactionService;
 	
-	@GetMapping
+	@GetMapping("/transactions")
 	public Mono<ResponseEntity<Flux<TransactionEntity>>> listarTransactions(){	//OK
 		return Mono.just(ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(transactionService.getTransactions()));
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/transactions/{id}")
 	public Mono<ResponseEntity<TransactionEntity>> listTransactionId(@PathVariable String id){	//OK
 		return transactionService.getTransactionById(id).map(t -> ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(t)).defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 	
-	@PostMapping
+	@PostMapping("/transactions")
 	public Mono<TransactionEntity> agregarAccount(@RequestBody TransactionEntity transaction){	//
 		return transactionService.newTransaction(transaction);
 	}
 	
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/transactions/{id}")
 	public Mono<Void> deleteAccount(@PathVariable String id){	//OK
 		return transactionService.deleteTransactionById(id);
 	}
 
 
 
-	@PutMapping("/{id}")
+	@PutMapping("/transactions/{id}")
 	public Mono<ResponseEntity<TransactionEntity>> updateAccount(@RequestBody TransactionEntity transaction, @PathVariable String id){
 		return transactionService.updateTransaction(transaction, id)
 				.map(ResponseEntity.ok()::body)
@@ -61,15 +61,29 @@ public class TransactionController {
 	}
 	
 	
-	//listar transacciones x numero de cuenta
+	//listar transacciones x numero de cuenta getTransactionByNroAccount
 	
-	@GetMapping("/transactAccount/{id}")
-	public Mono<ResponseEntity<TransactionEntity>> listTransactionByAccountNumber(@PathVariable String account){
+	/*
+	@GetMapping("/transactions/account/{id}")
+	public Mono<ResponseEntity<TransactionEntity>> listTransactionByAccountNumber(@PathVariable String id){
 		
-		return transactionService.getTransactionById(account).map(tr -> ResponseEntity.ok()
+		return transactionService.getTransactionByNroAccount(id).map(tr -> 
+			ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(tr))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
+				
+	}
+	*/
+	
+	//prueba
+	@GetMapping("/transactions/account/{id}")
+	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable String id){
+		
+		return Mono.just(ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(transactionService.getTransactionsByNroAccountX(id)));
+	
 				
 	}
 	
