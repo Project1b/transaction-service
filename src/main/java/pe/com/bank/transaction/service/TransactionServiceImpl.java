@@ -66,9 +66,9 @@ public class TransactionServiceImpl implements TransactionService{
 	// Prueba
 	
 	@Override
-	public Flux<TransactionEntity> getTransactionsByNroAccountX(String id) {
+	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber) {
 		
-		return transactionRepository.findTransactionsEntitiesByAccountNumber(id);
+		return transactionRepository.findTransactionsEntitiesByAccountNumber(accountNumber);
 	}
 
 	

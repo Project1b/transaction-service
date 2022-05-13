@@ -22,6 +22,6 @@ public interface TransactionService {
 	public Mono<TransactionEntity> getTransactionByNroAccount(String id);
 	
 	//prueba
-	public Flux<TransactionEntity> getTransactionsByNroAccountX(String id);
+	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber);
 	
 }

@@ -61,28 +61,13 @@ public class TransactionController {
 	}
 	
 	
-	//listar transacciones x numero de cuenta getTransactionByNroAccount
-	
-	/*
-	@GetMapping("/transactions/account/{id}")
-	public Mono<ResponseEntity<TransactionEntity>> listTransactionByAccountNumber(@PathVariable String id){
-		
-		return transactionService.getTransactionByNroAccount(id).map(tr -> 
-			ResponseEntity.ok()
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(tr))
-				.defaultIfEmpty(ResponseEntity.notFound().build());
-				
-	}
-	*/
-	
 	//prueba
 	@GetMapping("/transactions/account/{id}")
-	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable String id){
+	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountNumber){
 		
 		return Mono.just(ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
-				.body(transactionService.getTransactionsByNroAccountX(id)));
+				.body(transactionService.getTransactionsByNroAccountX(accountNumber)));
 	
 				
 	}
