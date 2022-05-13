@@ -56,10 +56,19 @@ public class TransactionServiceImpl implements TransactionService{
 				;
 	}
 
+	public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId) {
+		return transactionRepository.findTransactionEntitiesByCreditId(creditId);
+
+	}
+
+	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity){
+		return transactionRepository.save(transactionEntity);
+	}
+
+
 
 	@Override
 	public Mono<TransactionEntity> getTransactionByNroAccount(String id) {
-		
 		return transactionRepository.findTransactionsEntitiesByAccountNumber(id).last();
 	}
 
@@ -67,7 +76,6 @@ public class TransactionServiceImpl implements TransactionService{
 	
 	@Override
 	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber) {
-		
 		return transactionRepository.findTransactionsEntitiesByAccountNumber(accountNumber);
 	}
 

@@ -44,7 +44,8 @@ public class TransactionController {
 	public Mono<TransactionEntity> agregarAccount(@RequestBody TransactionEntity transaction){	//
 		return transactionService.newTransaction(transaction);
 	}
-	
+
+
 	
 	@DeleteMapping("/transactions/{id}")
 	public Mono<Void> deleteAccount(@PathVariable String id){	//OK
@@ -70,6 +71,16 @@ public class TransactionController {
 				.body(transactionService.getTransactionsByNroAccountX(accountNumber)));
 	
 				
+	}
+
+	@GetMapping("/transaction/credit/{id}")
+	public Flux<TransactionEntity> getAllTransactionByCredit(@PathVariable("id") String creditId) {
+		return transactionService.getAllTransactionsByCredit(creditId);
+	}
+
+	@PostMapping ("/createTransaction")
+	public Mono<TransactionEntity> addTransaction(@RequestBody TransactionEntity transactionEntity){
+		return transactionService.createTransaction(transactionEntity);
 	}
 	
 }

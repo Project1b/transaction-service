@@ -23,5 +23,9 @@ public interface TransactionService {
 	
 	//prueba
 	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber);
+
+	public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId);
+
+	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity);
 	
 }
