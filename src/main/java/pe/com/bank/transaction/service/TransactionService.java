@@ -28,4 +28,6 @@ public interface TransactionService {
 
 	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity);
 	
+	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity);
+	
 }
