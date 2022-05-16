@@ -92,6 +92,10 @@ public class TransactionServiceImpl implements TransactionService{
 		return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId);
 		
 	}
+
+	public Mono<Long> countTransac(String typ){
+		return transactionRepository.countTransactionEntitiesByType(typ);
+	}
 	
 	/*
 	 	public Mono<TransactionEntity> update(TransactionEntity transaction, String id) {

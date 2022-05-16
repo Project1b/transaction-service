@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import pe.com.bank.transaction.entity.TransactionEntity;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 public interface TransactionRepository extends ReactiveMongoRepository<TransactionEntity, String>{
@@ -17,6 +18,6 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 	
 	Flux<TransactionEntity> findByDateBetweenAndAccountId(Date startDate,Date endDate,String accountId);
 	
-	
+	Mono<Long> countTransactionEntitiesByType(String typ);
 
 }

@@ -113,4 +113,9 @@ public class TransactionController {
 	
 	
 	}
+
+	@GetMapping ("/transaction/count/{typ}")
+	public Mono<Long> countTransac(@PathVariable String typ){
+		return transactionService.countTransac(typ);
+	}
 }
