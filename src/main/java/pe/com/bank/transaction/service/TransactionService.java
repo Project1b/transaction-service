@@ -1,12 +1,17 @@
 package pe.com.bank.transaction.service;
 
-import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import pe.com.bank.transaction.dto.TransactionDTO;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Service
+
 public interface TransactionService {
 
 	public Flux<TransactionEntity> getTransactions();
@@ -27,5 +32,7 @@ public interface TransactionService {
 	public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId);
 
 	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity);
+	
+	Flux<TransactionEntity> getTransactionsByDateAndAccountId(Date startDate, Date endDate,String accountId);
 	
 }

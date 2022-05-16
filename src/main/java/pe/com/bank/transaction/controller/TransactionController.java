@@ -1,6 +1,9 @@
 package pe.com.bank.transaction.controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pe.com.bank.transaction.dto.TransactionDTO;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import pe.com.bank.transaction.service.TransactionService;
 import reactor.core.publisher.Flux;
@@ -25,6 +29,7 @@ public class TransactionController {
 	
 	@Autowired
 	private TransactionService transactionService;
+	private TransactionDTO transactionDTO;
 	
 	@GetMapping("/transactions")
 	public Mono<ResponseEntity<Flux<TransactionEntity>>> listarTransactions(){	//OK
@@ -41,7 +46,9 @@ public class TransactionController {
 	}
 	
 	@PostMapping("/transactions")
-	public Mono<TransactionEntity> agregarAccount(@RequestBody TransactionEntity transaction){	//
+	public Mono<TransactionEntity> agregarAccount(@RequestBody TransactionEntity transaction){	
+		//
+		transaction.setDate(new Date());
 		return transactionService.newTransaction(transaction);
 	}
 
@@ -83,4 +90,15 @@ public class TransactionController {
 		return transactionService.createTransaction(transactionEntity);
 	}
 	
+	@GetMapping ("transactions/{accountId}/{startDate}/{endDate}")
+		public Flux<TransactionEntity> getTransactionsByDateAndAccountId(@PathVariable String accountId,
+				@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+				@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate){
+		
+		
+		
+					return transactionService.getTransactionsByDateAndAccountId(startDate,endDate,accountId);
+	
+	
+	}
 }

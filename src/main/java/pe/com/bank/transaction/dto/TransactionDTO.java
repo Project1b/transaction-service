@@ -1,22 +1,17 @@
-package pe.com.bank.transaction.entity;
+package pe.com.bank.transaction.dto;
 
 import java.util.Date;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Document(collection="transaction")
-public class TransactionEntity {
-
-	@Id
+public class TransactionDTO {
+	
+	
 	private String transactionId;
 	private Double amount;
 	private Date date;
@@ -24,4 +19,7 @@ public class TransactionEntity {
 	private String accountNumber;
 	private String accountId;
 	private String creditId;
+	private Date startDate;
+	private Date endDate;
+
 }

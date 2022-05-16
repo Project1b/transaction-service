@@ -1,5 +1,7 @@
 package pe.com.bank.transaction.repository;
 
+import java.util.Date;
+
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +14,9 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 	Flux<TransactionEntity> findTransactionsEntitiesByAccountNumber(String accountNumber);
 
 	Flux<TransactionEntity> findTransactionEntitiesByCreditId(String creditId);
+	
+	Flux<TransactionEntity> findByDateBetweenAndAccountId(Date startDate,Date endDate,String accountId);
+	
+	
 
 }
