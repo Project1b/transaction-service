@@ -35,4 +35,6 @@ public interface TransactionService {
 	
 	Flux<TransactionEntity> getTransactionsByDateAndAccountId(Date startDate, Date endDate,String accountId);
 	
+	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity);
+	
 }

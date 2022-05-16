@@ -26,6 +26,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/v1")
 public class TransactionController {
 
+	// CRUD
 	
 	@Autowired
 	private TransactionService transactionService;
@@ -69,9 +70,11 @@ public class TransactionController {
 	}
 	
 	
-	//prueba
+	// EDWIN 
+	
+	// lista transacciones por Numero de cuenta / id de cuenta
 	@GetMapping("/transactions/account/{id}")
-	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountNumber){
+	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountNumber){	
 		
 		return Mono.just(ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
@@ -79,7 +82,16 @@ public class TransactionController {
 	
 				
 	}
+	
+	@PostMapping("transactions/amountUpdate")
+	public Mono<TransactionEntity> pruebaInsertTransaction(@RequestBody TransactionEntity transactionEntity){
+		return transactionService.createTransaction(transactionEntity);
+	}
+	
 
+	
+	//WILMER
+	
 	@GetMapping("/transaction/credit/{id}")
 	public Flux<TransactionEntity> getAllTransactionByCredit(@PathVariable("id") String creditId) {
 		return transactionService.getAllTransactionsByCredit(creditId);
