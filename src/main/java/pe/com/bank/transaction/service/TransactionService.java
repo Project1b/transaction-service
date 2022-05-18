@@ -24,10 +24,10 @@ public interface TransactionService {
 	
 	public Mono<TransactionEntity> updateTransaction(TransactionEntity transaction, String id);
 	
-	public Mono<TransactionEntity> getTransactionByNroAccount(String id);
+	//public Mono<TransactionEntity> getTransactionByNroAccount(String id);
 	
 	//prueba
-	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber);
+	public Flux<TransactionEntity> getTransactionsByAccountId(String accountId);
 
 	public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId);
 

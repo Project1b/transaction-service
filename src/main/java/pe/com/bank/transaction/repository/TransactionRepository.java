@@ -12,7 +12,8 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface TransactionRepository extends ReactiveMongoRepository<TransactionEntity, String>{
 
-	Flux<TransactionEntity> findTransactionsEntitiesByAccountNumber(String accountNumber);
+	//Flux<TransactionEntity> findTransactionsEntitiesByAccountNumber(String accountNumber);
+	Flux<TransactionEntity> findTransactionsEntitiesByAccountId(String accountId);
 
 	Flux<TransactionEntity> findTransactionEntitiesByCreditId(String creditId);
 	

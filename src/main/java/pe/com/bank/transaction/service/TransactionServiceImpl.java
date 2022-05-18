@@ -70,17 +70,17 @@ public class TransactionServiceImpl implements TransactionService{
 	}
 	
 
-
+	/*
 	@Override
 	public Mono<TransactionEntity> getTransactionByNroAccount(String id) {
 		return transactionRepository.findTransactionsEntitiesByAccountNumber(id).last();
-	}
+	} */
 
 	// EDWIN
 	
 	@Override
-	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber) {
-		return transactionRepository.findTransactionsEntitiesByAccountNumber(accountNumber);
+	public Flux<TransactionEntity> getTransactionsByAccountId(String accountId) {
+		return transactionRepository.findTransactionsEntitiesByAccountId(accountId);
 	}
 	
 	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity){
