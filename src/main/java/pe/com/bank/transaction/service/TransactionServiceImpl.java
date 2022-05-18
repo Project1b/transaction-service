@@ -93,8 +93,8 @@ public class TransactionServiceImpl implements TransactionService{
 		
 	}
 
-	public Mono<Long> countTransac(String typ){
-		return transactionRepository.countTransactionEntitiesByType(typ);
+	public Mono<Long> countTransac(String typ,String accountId){
+		return transactionRepository.countTransactionEntitiesByTypeAndAccountId(typ,accountId);
 	}
 	
 	/*

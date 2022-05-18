@@ -19,6 +19,6 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 	
 	Flux<TransactionEntity> findByDateBetweenAndAccountId(Date startDate,Date endDate,String accountId);
 	
-	Mono<Long> countTransactionEntitiesByType(String typ);
+	Mono<Long> countTransactionEntitiesByTypeAndAccountId(String typ,String accountId);
 
 }

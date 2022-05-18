@@ -7,14 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import pe.com.bank.transaction.dto.TransactionDTO;
 import pe.com.bank.transaction.entity.TransactionEntity;
@@ -115,8 +108,8 @@ public class TransactionController {
 	
 	}
 
-	@GetMapping ("/transaction/count/{typ}")
-	public Mono<Long> countTransac(@PathVariable String typ){
-		return transactionService.countTransac(typ);
+	@GetMapping ("/transaction/count")
+	public Mono<Long> countTransac(@RequestParam(name = "accountId") String accountId, @RequestParam String typ){
+		return transactionService.countTransac(typ,accountId);
 	}
 }

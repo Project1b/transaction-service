@@ -37,6 +37,6 @@ public interface TransactionService {
 	
 	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity);
 
-	public Mono<Long> countTransac(String typ);
+	public Mono<Long> countTransac(String typ,String accountId);
 
 }
