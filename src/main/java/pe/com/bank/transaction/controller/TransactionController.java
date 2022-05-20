@@ -7,14 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import pe.com.bank.transaction.dto.BalanceSummaryDTO;
 import pe.com.bank.transaction.dto.ReportComissionDTO;
@@ -35,21 +28,21 @@ public class TransactionController {
 	private TransactionDTO transactionDTO;
 	
 	@GetMapping("/transactions")
-	public Mono<ResponseEntity<Flux<TransactionEntity>>> listarTransactions(){	//OK
+	public Mono<ResponseEntity<Flux<TransactionEntity>>> getAllTransactions(){	//OK
 		return Mono.just(ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(transactionService.getTransactions()));
 	}
 	
 	@GetMapping("/transactions/{id}")
-	public Mono<ResponseEntity<TransactionEntity>> listTransactionId(@PathVariable String id){	//OK
+	public Mono<ResponseEntity<TransactionEntity>> getTransactionById(@PathVariable String id){	//OK
 		return transactionService.getTransactionById(id).map(t -> ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(t)).defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 	
 	@PostMapping("/transactions")
-	public Mono<TransactionEntity> agregarAccount(@RequestBody TransactionEntity transaction){	
+	public Mono<TransactionEntity> addNewTransaction(@RequestBody TransactionEntity transaction){	
 		//
 		transaction.setDate(new Date());
 		return transactionService.newTransaction(transaction);
@@ -59,17 +52,18 @@ public class TransactionController {
 
 	
 	@DeleteMapping("/transactions/{id}")
-	public Mono<Void> deleteAccount(@PathVariable String id){	//OK
+	public Mono<Void> deleteTransactionById(@PathVariable String id){	//OK
 		return transactionService.deleteTransactionById(id);
 	}
 
 
-
+	// Funcion OK / completar el tratamiento de valores null 
 	@PutMapping("/transactions/{id}")
-	public Mono<ResponseEntity<TransactionEntity>> updateAccount(@RequestBody TransactionEntity transaction, @PathVariable String id){
+	public Mono<ResponseEntity<TransactionEntity>> updateTransactionByI(@RequestBody TransactionEntity transaction, @PathVariable String id){
 		return transactionService.updateTransaction(transaction, id)
 				.map(ResponseEntity.ok()::body)
-				.defaultIfEmpty(ResponseEntity.notFound().build());
+				.defaultIfEmpty(ResponseEntity.notFound()
+				.build());
 	}
 	
 	
@@ -78,11 +72,11 @@ public class TransactionController {
 	// lista transacciones por Numero de cuenta / id de cuenta
 	/*
 	@GetMapping("/transactions/account/{id}")
-	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountNumber){	
+	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountId){	
 		
 		return Mono.just(ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_JSON)
-				.body(transactionService.getTransactionsByNroAccountX(accountNumber)));
+				.body(transactionService.getTransactionsByAccountId(accountId)));
 	
 				
 	}*/
@@ -137,5 +131,10 @@ public class TransactionController {
 			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy")Date endDate){
 		
 		return transactionService.getReportCommision(startDate,endDate);
+	}
+
+	@GetMapping ("/transaction/count")
+	public Mono<Long> countTransac(@RequestParam(name = "accountId") String accountId, @RequestParam String typ){
+		return transactionService.countTransac(typ,accountId);
 	}
 }

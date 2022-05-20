@@ -42,4 +42,6 @@ public interface TransactionService {
 	
 	public Flux<ReportComissionDTO> getReportCommision(Date startDate,Date endDate);
 	
+	public Mono<Long> countTransac(String typ,String accountId);
+
 }

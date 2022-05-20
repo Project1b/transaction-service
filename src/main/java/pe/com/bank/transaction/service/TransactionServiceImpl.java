@@ -89,15 +89,12 @@ public class TransactionServiceImpl implements TransactionService{
 	@Override
 	public Mono<TransactionEntity> getTransactionByNroAccount(String id) {
 		return transactionRepository.findTransactionsEntitiesByAccountNumber(id).last();
-	}
+	} */
 
 	// EDWIN
 	
-	@Override
-	public Flux<TransactionEntity> getTransactionsByNroAccountX(String accountNumber) {
-		return transactionRepository.findTransactionsEntitiesByAccountNumber(accountNumber);
-	}
-*/	
+
+	
 	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity){
 		return transactionRepository.save(transactionEntity);
 	}
@@ -107,6 +104,10 @@ public class TransactionServiceImpl implements TransactionService{
 		
 		return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId);
 		
+	}
+
+	public Mono<Long> countTransac(String typ,String accountId){
+		return transactionRepository.countTransactionEntitiesByTypeAndAccountId(typ,accountId);
 	}
 	
 	

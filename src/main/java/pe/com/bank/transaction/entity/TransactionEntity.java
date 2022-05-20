@@ -24,5 +24,6 @@ public class TransactionEntity {
 	private String type;
 	private String typeDetails;
 	private String accountId;
+	private Double commissionTr;
 	private String creditId;
 }
