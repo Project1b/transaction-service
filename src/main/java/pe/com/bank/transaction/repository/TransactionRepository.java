@@ -11,12 +11,17 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface TransactionRepository extends ReactiveMongoRepository<TransactionEntity, String>{
 
-	Flux<TransactionEntity> findTransactionsEntitiesByAccountNumber(String accountNumber);
+	//Flux<TransactionEntity> findTransactionsEntitiesByAccountNumber(String accountNumber);
 
 	Flux<TransactionEntity> findTransactionEntitiesByCreditId(String creditId);
 	
 	Flux<TransactionEntity> findByDateBetweenAndAccountId(Date startDate,Date endDate,String accountId);
+	Flux<TransactionEntity> findByDateBetweenAndCreditId(Date startDate,Date endDate,String creditId);
 	
+	Flux<TransactionEntity> findByDateBetweenAndAccountIdOrderByDateDesc(Date startDate,Date endDate,String creditId);
+	Flux<TransactionEntity> findByDateBetweenAndCreditIdOrderByDateDesc(Date startDate,Date endDate,String creditId);
+	
+	Flux<TransactionEntity> findByAccountId(String accountId);
 	
 
 }

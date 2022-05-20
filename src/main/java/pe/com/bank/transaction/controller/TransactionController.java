@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pe.com.bank.transaction.dto.BalanceSummaryDTO;
+import pe.com.bank.transaction.dto.ReportComissionDTO;
 import pe.com.bank.transaction.dto.TransactionDTO;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import pe.com.bank.transaction.service.TransactionService;
@@ -53,6 +55,7 @@ public class TransactionController {
 		return transactionService.newTransaction(transaction);
 	}
 
+	
 
 	
 	@DeleteMapping("/transactions/{id}")
@@ -73,6 +76,7 @@ public class TransactionController {
 	// EDWIN 
 	
 	// lista transacciones por Numero de cuenta / id de cuenta
+	/*
 	@GetMapping("/transactions/account/{id}")
 	public Mono<ResponseEntity<Flux<TransactionEntity>>> listTransactionByAccountNumberX(@PathVariable("id") String accountNumber){	
 		
@@ -81,9 +85,9 @@ public class TransactionController {
 				.body(transactionService.getTransactionsByNroAccountX(accountNumber)));
 	
 				
-	}
+	}*/
 	
-	@PostMapping("transactions/amountUpdate")
+	@PostMapping("/transactions/amountUpdate")
 	public Mono<TransactionEntity> pruebaInsertTransaction(@RequestBody TransactionEntity transactionEntity){
 		return transactionService.createTransaction(transactionEntity);
 	}
@@ -102,15 +106,36 @@ public class TransactionController {
 		return transactionService.createTransaction(transactionEntity);
 	}
 	
-	@GetMapping ("transactions/{accountId}/{startDate}/{endDate}")
+	@GetMapping ("/transactions/accountId/{accountId}/{startDate}/{endDate}")
 		public Flux<TransactionEntity> getTransactionsByDateAndAccountId(@PathVariable String accountId,
 				@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
 				@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate){
-		
-		
-		
+				
 					return transactionService.getTransactionsByDateAndAccountId(startDate,endDate,accountId);
+		
+	}
 	
+	@GetMapping ("/transactions/creditId/{creditId}/{startDate}/{endDate}")
+	public Flux<TransactionEntity> getTransactionsByDateAndCreditId(@PathVariable String creditId,
+			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate){
+		
+		return transactionService.getTransactionsByDateAndCreditId(startDate,endDate,creditId);
+
+
+	}
 	
+	@GetMapping ("/transactions/resumeCustomer/{customerId}/{startDate}/{endDate}")
+	public Mono<BalanceSummaryDTO> getResumenByCustomerId (@PathVariable String customerId,
+			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate) {
+		return transactionService.getResumenByCustomerId(customerId, startDate, endDate);
+	}
+	
+	@GetMapping ("/transactions/reportByProduct/{startDate}/{endDate}")
+	public Flux<ReportComissionDTO> getReportCommision(@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy")Date endDate){
+		
+		return transactionService.getReportCommision(startDate,endDate);
 	}
 }

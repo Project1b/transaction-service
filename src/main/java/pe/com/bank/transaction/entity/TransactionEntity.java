@@ -19,9 +19,10 @@ public class TransactionEntity {
 	@Id
 	private String transactionId;
 	private Double amount;
+	private Double commission;
 	private Date date;
 	private String type;
-	private String accountNumber;
+	private String typeDetails;
 	private String accountId;
 	private String creditId;
 }
