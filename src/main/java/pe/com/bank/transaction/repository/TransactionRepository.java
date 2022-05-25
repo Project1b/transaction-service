@@ -27,7 +27,6 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 	Flux<TransactionEntity> findByDateBetweenAndCreditIdOrderByDateDesc(Date startDate,Date endDate,String creditId);
 	
 	Flux<TransactionEntity> findByAccountId(String accountId);
-	
-	
+
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import pe.com.bank.transaction.client.entity.AccountEntity;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Component
 public class AccountRestClient {
@@ -45,4 +46,13 @@ public class AccountRestClient {
 
 	  }
 
+	  public Flux<AccountEntity> getAccountCard(String cardId){
+		  return webClient.get().uri(uriBuilder -> uriBuilder.scheme("http")
+				  .host("gateway-server-service")
+				  .path("/api/account/getAccountCard")
+				  .queryParam("cardId",cardId)
+				  .build())
+				  .retrieve()
+				  .bodyToFlux(AccountEntity.class);
+	  }
 }

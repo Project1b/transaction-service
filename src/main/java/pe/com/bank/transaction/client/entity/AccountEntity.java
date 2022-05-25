@@ -20,4 +20,5 @@ public class AccountEntity {
 	private String amounttype;	
 	private String productId;
 	private String customerId;
+	private String cardId;
 }

@@ -9,9 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import pe.com.bank.transaction.dto.BalanceSummaryDTO;
-import pe.com.bank.transaction.dto.ReportComissionDTO;
-import pe.com.bank.transaction.dto.TransactionDTO;
+import pe.com.bank.transaction.dto.*;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import pe.com.bank.transaction.service.TransactionService;
 import reactor.core.publisher.Flux;
@@ -137,4 +135,20 @@ public class TransactionController {
 	public Mono<Long> countTransac(@RequestParam(name = "accountId") String accountId, @RequestParam String typ){
 		return transactionService.countTransac(typ,accountId);
 	}
+
+	@GetMapping("/lastMovement/{id}")
+	public Flux<TransactionEntity> getLastMovement(@PathVariable String id){
+		return transactionService.getReportLastMovement(id);
+	}
+
+	@GetMapping("/transactionCard")
+	public Flux<TransactionEntity> getCardTransaction(@RequestParam String cardId){
+		return transactionService.getLastCardTransaction(cardId);
+	}
+
+	@GetMapping("/lastMovementCard")
+	public Mono<LastMovementDTO> getLastMovementCard(@RequestParam String cardId,@RequestParam String creditId){
+		return transactionService.getLastMovement(creditId,cardId);
+	}
+
 }
