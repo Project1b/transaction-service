@@ -100,7 +100,7 @@ public class TransactionServiceImpl implements TransactionService{
 	}
 
 
-	public Flux<TransactionEntity> getTransactionsByDateAndAccountId(Date startDate, Date endDate,String accountId){
+	public Flux<TransactionEntity> getTransactionsByDateAndAccountId(String accountId,Date startDate, Date endDate){
 		
 		return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId);
 		
@@ -111,11 +111,24 @@ public class TransactionServiceImpl implements TransactionService{
 	}
 	
 	
-	public Flux<TransactionEntity> getTransactionsByDateAndCreditId(Date startDate, Date endDate,String creditId){
+	public Flux<TransactionEntity> getTransactionsByDateAndCreditId(String creditId,Date startDate, Date endDate){
 		
 		return transactionRepository.findByDateBetweenAndCreditIdOrderByDateDesc(startDate, endDate, creditId);
 		
 	}
+	
+	
+	public Flux<TransactionEntity> getTransactionsByDateAndAccountIdMono(String accountId,Date startDate, Date endDate){
+		
+	//	transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId)
+	//	.subscribe(t -> System.out.println("Transaction :"+t));
+		
+		
+		//return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId).flatMap(x -x->)
+		return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId);
+		
+	}
+	
 	
 	
 	
@@ -124,11 +137,11 @@ public class TransactionServiceImpl implements TransactionService{
 		var prueba = Flux.just(1,2,3,4,5);
 		var infoAccount = accountRestClient.getAccountByCustomerId(customerId).flatMap( account -> {			
 					
-			var transaction =transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, account.getId()).collectList();
+			var transaction =transactionRepository.findByDateBetweenAndAccountIdOrderByDateDesc(startDate, endDate, account.getId()).collectList();
+			var transactionList = transactionUtil.findByDateBetweenAndAccountIdOrderByDateDesc(startDate, endDate, customerId);
 			var  currentAmount = account.getAmount();
 			 	
-			 	var daySum =Flux.range(1, 30).flatMap( d -> {
-			 		System.out.println("Day : "+transactionUtil.dateToLocalDate(endDate).minusDays(d+1));	
+			 	var daySum =Flux.range(1, 7).flatMap( d -> {
 			 		
 			 		var day = transactionUtil.dateToLocalDate(endDate).minusDays(d+1);
 			 		
@@ -140,35 +153,42 @@ public class TransactionServiceImpl implements TransactionService{
 			 			return Mono.just(sum);
 			 		});
 			 		
-			 		abono.doOnNext(a -> System.out.println("sumaExorto : "+a));
-			 		System.out.println("sumaAbono : "+abono);
+			 	//	abono.doOnNext(a -> System.out.println("sumaExorto : "+a));
 			 		
 			 		//System.out.println("sumaAbono : "+abono);	
 			 		
-			 		var exorto =transaction.flatMap(x -> {
+			 		var exorto =transactionList.flatMap(x -> {
 				 		var sum =	x.stream().filter( t -> t.getType().equals("Exorto")&& transactionUtil.dateToLocalDate(t.getDate()).isEqual(day))
 				 			.map(TransactionEntity::getAmount).reduce(0.0,Double::sum);
 				 							 						 		
 				 			return Mono.just(sum);
 				 		});
 			 		//exorto.subscribe( s -> System.out.println("sumaExorto : "+s));
-			 		System.out.println("sumaExorto : "+exorto);
-			 		exorto.doOnNext(e -> System.out.println("sumaExorto : "+e));
-			 		var sum = abono.zipWith(exorto,(a,e) -> e-a);
-			 		System.out.println("suma : "+sum);
+			 		var sum = abono.zipWith(exorto,(a,e) -> e-a)
+			 				.doOnNext(n -> System.out.println("Suma abono y exorto "+n + " - Day :"+day+" Account :"+account.getId()));
+			 		//System.out.println("suma : "+sum);
+			 		//System.out.println("Day : "+transactionUtil.dateToLocalDate(endDate).minusDays(d+1)+" - account :"+account.getId());	
+
 			 		
-			 		
-			 		return sum.map( s -> s).doOnNext(a->System.out.println("sumaFinal Dia "+day+" accountId "+account.getId()+ ": " +a));
+			 		return sum.map( s -> s);
+			 				//.doOnNext(a->System.out.println("sumaFinal Dia "+day+" accountId "+account.getId()+ ": " +a));
 			 
 			 	//return	Mono.just(LocalDate.parse("2018-12-06"));
 			 		
 			 		
-			 	}).reduce(0.0, (x1, x2) -> x1 + x2);
+			 	});
+			
+			 	var sumCumulative= daySum.collectList().map(d -> transactionUtil.toCumulativeSumStream(d));
+			 			//.doOnNext( x -> x.get().forEach(t -> System.out.println("Suma acumulativa: "+t)));
+			 		
+			 	//reduce(0.0,(a, b) -> a + b)
+			 	//transactionUtil.toCumulativeSumStream(daySum.collectList());
 			 	
 			 	//currentAmount=currentAmount+daySum;
 			 	
 			 	
-			 	return daySum.map(x -> new InfoAccount(account.getId(),x/30));
+			 	return sumCumulative.map(x -> new InfoAccount(account.getId(),x.get().sum()));
+			 		//	.doOnNext( x -> System.out.print("Suma total :"+x));
 			 	
 			 	
 			 	//return Mono.just(new InfoAccount());
@@ -187,7 +207,7 @@ public class TransactionServiceImpl implements TransactionService{
 	
 	
 	
-	public Flux<ReportComissionDTO> getReportCommision(Date startDate,Date endDate){
+	public Flux<ReportComissionDTO> getCommisionReport(Date startDate,Date endDate){
 		return productRestClient.getProducts().flatMap( product -> {
 						
 			 var transactionAccount = accountRestClient.getAccountByProductId(product.getProductId()).flatMap(account ->  {				
@@ -206,6 +226,23 @@ public class TransactionServiceImpl implements TransactionService{
 
 		});
 	}
+
+	public Flux<TransactionEntity> getTransactionsByAccountId(String accountId) {
+		return transactionRepository.findByAccountIdOrderByDateDesc(accountId);
+	}
+
+	public Flux<TransactionEntity> getTransactionsByCreditId(String creditId) {
+		return transactionRepository.findByAccountIdOrderByDateDesc(creditId);
+	}
+
+	public Flux<TransactionEntity> getTransactionsByLoanId(String loanId){
+		return transactionRepository.findByLoanIdOrderByDateDesc(loanId);
+	}
+	
+	public Flux<TransactionEntity> getTransactionsByDateAndLoanId(String loanId,Date startDate, Date endDate){
+		return transactionRepository.findByDateBetweenAndLoanId(startDate, endDate, loanId);
+	}
+
 	
 	/*
 	 	public Mono<TransactionEntity> update(TransactionEntity transaction, String id) {

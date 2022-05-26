@@ -34,14 +34,21 @@ public interface TransactionService {
 
 	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity);
 	
-	Flux<TransactionEntity> getTransactionsByDateAndAccountId(Date startDate, Date endDate,String accountId);
-	Flux<TransactionEntity> getTransactionsByDateAndCreditId(Date startDate, Date endDate,String creditId);
+	public Flux<TransactionEntity> getTransactionsByAccountId(String accountId);
+	public Flux<TransactionEntity> getTransactionsByDateAndAccountId(String accountId,Date startDate, Date endDate);
+	
+	public Flux<TransactionEntity> getTransactionsByCreditId(String creditId);
+	public Flux<TransactionEntity> getTransactionsByDateAndCreditId(String creditId,Date startDate, Date endDate);
+	
+	public Flux<TransactionEntity> getTransactionsByLoanId(String loanId);
+	public Flux<TransactionEntity> getTransactionsByDateAndLoanId(String loanId,Date startDate, Date endDate);
 	
 	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity);
 	public Mono<BalanceSummaryDTO> getResumenByCustomerId(String customerId,Date startDate, Date endDate);
 	
-	public Flux<ReportComissionDTO> getReportCommision(Date startDate,Date endDate);
+	public Flux<ReportComissionDTO> getCommisionReport(Date startDate,Date endDate);
 	
 	public Mono<Long> countTransac(String typ,String accountId);
+	//public Flux<TransactionEntity> getTransactionsByDateAndAccountIdMono(Date startDate, Date endDate,String accountId);
 
 }

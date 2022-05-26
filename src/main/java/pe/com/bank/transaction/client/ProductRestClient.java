@@ -25,7 +25,7 @@ public class ProductRestClient {
 
     public Flux<ProductEntity> getProducts(){
 
-        var url = productUrl.concat("/v1/products");
+        var url = productUrl.concat("/v1/products/getAllProduct");
         return webClient
                 .get()
                 .uri(url)

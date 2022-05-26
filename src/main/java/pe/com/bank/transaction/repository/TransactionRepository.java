@@ -20,13 +20,21 @@ public interface TransactionRepository extends ReactiveMongoRepository<Transacti
 	
 	Flux<TransactionEntity> findByDateBetweenAndCreditId(Date startDate,Date endDate,String creditId);
 	
+	Flux<TransactionEntity> findByDateBetweenAndLoanId(Date startDate,Date endDate,String creditId);
+	
 	Mono<Long> countTransactionEntitiesByTypeAndAccountId(String typ,String accountId);
 	
+	Flux<TransactionEntity> findByAccountIdOrderByDateDesc(String creditId);
+	
 	Flux<TransactionEntity> findByDateBetweenAndAccountIdOrderByDateDesc(Date startDate,Date endDate,String creditId);
+	
+	Flux<TransactionEntity> findByCreditIdOrderByDateDesc(String creditId);
 	
 	Flux<TransactionEntity> findByDateBetweenAndCreditIdOrderByDateDesc(Date startDate,Date endDate,String creditId);
 	
 	Flux<TransactionEntity> findByAccountId(String accountId);
+	
+	Flux<TransactionEntity> findByLoanIdOrderByDateDesc(String loanId);
 	
 	
 
