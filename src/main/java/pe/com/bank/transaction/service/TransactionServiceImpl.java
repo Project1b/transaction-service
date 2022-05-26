@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.DoubleStream;
@@ -16,14 +17,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import lombok.AllArgsConstructor;
-import lombok.var;
 import pe.com.bank.transaction.client.AccountRestClient;
 import pe.com.bank.transaction.client.CreditRestClient;
 import pe.com.bank.transaction.client.ProductRestClient;
-import pe.com.bank.transaction.dto.BalanceSummaryDTO;
-import pe.com.bank.transaction.dto.InfoAccount;
-import pe.com.bank.transaction.dto.ReportComissionDTO;
-import pe.com.bank.transaction.dto.TransactionDTO;
+import pe.com.bank.transaction.dto.*;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import pe.com.bank.transaction.repository.TransactionRepository;
 import pe.com.bank.transaction.util.TransactionUtil;
@@ -33,56 +30,56 @@ import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
 @Service
-public class TransactionServiceImpl implements TransactionService{
+public class TransactionServiceImpl implements TransactionService {
 
-	TransactionUtil transactionUtil;
-	TransactionRepository transactionRepository;
-	AccountRestClient accountRestClient;
-	ProductRestClient productRestClient;
-	CreditRestClient creditRestClient;
-	
-	public Flux<TransactionEntity> getTransactions() {
-		return transactionRepository.findAll();
-	}
+    TransactionUtil transactionUtil;
+    TransactionRepository transactionRepository;
+    AccountRestClient accountRestClient;
+    ProductRestClient productRestClient;
+    CreditRestClient creditRestClient;
 
-	
-	public Mono<TransactionEntity> getTransactionById(String id) {
-		return transactionRepository.findById(id);
-	}
+    public Flux<TransactionEntity> getTransactions() {
+        return transactionRepository.findAll();
+    }
 
-	
-	public Mono<TransactionEntity> newTransaction(TransactionEntity transaction) {
-		return transactionRepository.save(transaction);
-	}
 
-	
-	public Mono<Void> deleteTransactionById(String id) {
-		return transactionRepository.deleteById(id);
-	}
+    public Mono<TransactionEntity> getTransactionById(String id) {
+        return transactionRepository.findById(id);
+    }
 
-	
-	public Mono<TransactionEntity> updateTransaction(TransactionEntity transaction, String id) {
-		
-		return transactionRepository.findById(id)
-				.flatMap(a -> {
-					a.setAmount(transaction.getAmount());
-					a.setDate(transaction.getDate());
-					a.setType(transaction.getType());
-					return transactionRepository.save(a);
-				})
-				;
-	}
 
-	public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId) {
-		return transactionRepository.findTransactionEntitiesByCreditId(creditId);
+    public Mono<TransactionEntity> newTransaction(TransactionEntity transaction) {
+        return transactionRepository.save(transaction);
+    }
 
-	}
 
-	// WILMER
-	
-	public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity){
-		return transactionRepository.save(transactionEntity);
-	}
+    public Mono<Void> deleteTransactionById(String id) {
+        return transactionRepository.deleteById(id);
+    }
+
+
+    public Mono<TransactionEntity> updateTransaction(TransactionEntity transaction, String id) {
+
+        return transactionRepository.findById(id)
+                .flatMap(a -> {
+                    a.setAmount(transaction.getAmount());
+                    a.setDate(transaction.getDate());
+                    a.setType(transaction.getType());
+                    return transactionRepository.save(a);
+                })
+                ;
+    }
+
+    public Flux<TransactionEntity> getAllTransactionsByCredit(String creditId) {
+        return transactionRepository.findTransactionEntitiesByCreditId(creditId);
+
+    }
+
+    // WILMER
+
+    public Mono<TransactionEntity> createTransaction(TransactionEntity transactionEntity) {
+        return transactionRepository.save(transactionEntity);
+    }
 	
 
 /*
@@ -91,13 +88,7 @@ public class TransactionServiceImpl implements TransactionService{
 		return transactionRepository.findTransactionsEntitiesByAccountNumber(id).last();
 	} */
 
-	// EDWIN
-	
-
-	
-	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity){
-		return transactionRepository.save(transactionEntity);
-	}
+    // EDWIN
 
 
 	public Flux<TransactionEntity> getTransactionsByDateAndAccountId(String accountId,Date startDate, Date endDate){
@@ -105,6 +96,9 @@ public class TransactionServiceImpl implements TransactionService{
 		return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, accountId);
 		
 	}
+    public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity) {
+        return transactionRepository.save(transactionEntity);
+    }
 
 	public Mono<Long> countTransac(String typ,String accountId){
 		return transactionRepository.countTransactionEntitiesByTypeAndAccountId(typ,accountId);
@@ -206,26 +200,7 @@ public class TransactionServiceImpl implements TransactionService{
 	
 	
 	
-	
-	public Flux<ReportComissionDTO> getCommisionReport(Date startDate,Date endDate){
-		return productRestClient.getProducts().flatMap( product -> {
-						
-			 var transactionAccount = accountRestClient.getAccountByProductId(product.getProductId()).flatMap(account ->  {				
-				 return  transactionRepository.findByDateBetweenAndAccountId(startDate,endDate,account.getId()).flatMap(c -> {
-					 return c.getCommission()!=null? Mono.just(c.getCommission()):Mono.empty();
-				 })	;							
-			});
-				var transactionCredit = creditRestClient.getCreditByProductId(product.getProductId()).flatMap( credit -> {			
-				 return transactionRepository.findByDateBetweenAndCreditId(startDate,endDate,credit.getCreditId()).flatMap(c -> {
-					 return c.getCommission()!=null? Mono.just(c.getCommission()):Mono.empty();
-				   });
-				});
-			 	
-			var concat = Flux.concat(transactionCredit,transactionAccount).collectList();
-			return concat.map(t -> new ReportComissionDTO(product.getProductId(),product.getProductName(),t));
 
-		});
-	}
 
 	public Flux<TransactionEntity> getTransactionsByAccountId(String accountId) {
 		return transactionRepository.findByAccountIdOrderByDateDesc(accountId);
@@ -244,37 +219,77 @@ public class TransactionServiceImpl implements TransactionService{
 	}
 
 	
-	/*
-	 	public Mono<TransactionEntity> update(TransactionEntity transaction, String id) {
-		
-		return transactRepository.findById(id)
-				.flatMap(a -> {
-					a.setAmount(transaction.getAmount());
-					a.setDate(transaction.getDate());
-					a.setType(transaction.getType());
-					a.setAccountNumber(transaction.getAccountNumber());
-					a.setCreditId(transaction.getCreditId());
-					
-					return transactRepository.save(a);
-				});
-	}
 	
-	//
-	
-	public Mono<ServerResponse> getTransactions(ServerRequest request) {
-		var accountId = request.queryParam("accountNumber");
-		if (accountId.isPresent()) {
-			var accountFlux = transactRepository.findTransactionsEntitiesByAccountNumber(String.valueOf(accountId.get()));
-			return buildTransactionEntityResponse(accountFlux); 
-		} else {
-			var accountFlux = transactRepository.findAll();
-			return buildTransactionEntityResponse(accountFlux);
-		}
-	}
 
-	private Mono<ServerResponse> buildTransactionEntityResponse(Object accountFlux){
-		return ServerResponse.ok().body(accountFlux, TransactionEntity.class);
-	}
-	 */
+
+
+    public Flux<TransactionEntity> getTransactionsByDateAndCreditId(Date startDate, Date endDate, String creditId) {
+
+        return transactionRepository.findByDateBetweenAndCreditIdOrderByDateDesc(startDate, endDate, creditId);
+
+    }
+
+
+
+
+    public Flux<ReportComissionDTO> getReportCommision(Date startDate, Date endDate) {
+        return productRestClient.getProducts().flatMap(product -> {
+
+            var transactionAccount = accountRestClient.getAccountByProductId(product.getProductId()).flatMap(account -> {
+                return transactionRepository.findByDateBetweenAndAccountId(startDate, endDate, account.getId()).flatMap(c -> {
+                    return c.getCommission() != null ? Mono.just(c.getCommission()) : Mono.empty();
+                });
+            });
+            var transactionCredit = creditRestClient.getCreditByProductId(product.getProductId()).flatMap(credit -> {
+                return transactionRepository.findByDateBetweenAndCreditId(startDate, endDate, credit.getCreditId()).flatMap(c -> {
+                    return c.getCommission() != null ? Mono.just(c.getCommission()) : Mono.empty();
+                });
+            });
+
+            var concat = Flux.concat(transactionCredit, transactionAccount).collectList();
+            return concat.map(t -> new ReportComissionDTO(product.getProductId(), product.getProductName(), t));
+
+        });
+    }
+
+    public Mono<LastMovementDTO> getLastMovement(String creditId, String cardId) {
+
+        return transactionRepository.findTransactionEntitiesByCreditId(creditId)
+                .sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate()))
+                .take(2)
+                .collectList().flatMap(tr ->
+                        accountRestClient.getAccountCard(cardId).
+                                flatMap(account ->
+                                        transactionRepository.findByAccountId(account.getId())
+                                                .map(t -> new TransactionEntity(t.getTransactionId(), t.getAmount(), t.getCommission(), t.getDate(), t.getType(), t.getTypeDetails(), t.getTransactionId(), t.getCommissionTr(), t.getCreditId(),t.getLoanId()))
+                                )
+                                .sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate()))
+                                .take(10)
+                                .collectList().map(bra ->
+                                        new LastMovementDTO(tr, bra)
+                                )
+                );
+    }
+
+    public Flux<TransactionEntity> getReportLastMovement(String creditId) {
+        return transactionRepository.findTransactionEntitiesByCreditId(creditId)
+                .sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate()))
+                .take(2);
+    }
+
+    public Flux<TransactionEntity> getLastCardTransaction(String cardId) {
+        return accountRestClient.getAccountCard(cardId).
+                flatMap(account ->
+                        transactionRepository.findByAccountId(account.getId())
+                                .map(t -> new TransactionEntity(t.getTransactionId(),
+                                        t.getAmount(), t.getCommission(), t.getDate(), t.getType(),
+                                        t.getTypeDetails(), t.getTransactionId(), t.getCommissionTr(),
+                                        t.getCreditId(),t.getLoanId()))
+                )
+                .sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate()))
+                .take(10);
+    }
+
+
 
 }

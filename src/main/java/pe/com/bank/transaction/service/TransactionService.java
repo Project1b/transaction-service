@@ -6,9 +6,7 @@ import java.util.Date;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import pe.com.bank.transaction.dto.BalanceSummaryDTO;
-import pe.com.bank.transaction.dto.ReportComissionDTO;
-import pe.com.bank.transaction.dto.TransactionDTO;
+import pe.com.bank.transaction.dto.*;
 import pe.com.bank.transaction.entity.TransactionEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -46,9 +44,15 @@ public interface TransactionService {
 	public Mono<TransactionEntity> createTransactionAddAmount(TransactionEntity transactionEntity);
 	public Mono<BalanceSummaryDTO> getResumenByCustomerId(String customerId,Date startDate, Date endDate);
 	
-	public Flux<ReportComissionDTO> getCommisionReport(Date startDate,Date endDate);
+	public Flux<ReportComissionDTO> getReportCommision(Date startDate,Date endDate);
 	
 	public Mono<Long> countTransac(String typ,String accountId);
 	//public Flux<TransactionEntity> getTransactionsByDateAndAccountIdMono(Date startDate, Date endDate,String accountId);
+
+	public Flux<TransactionEntity> getReportLastMovement(String creditId);
+
+	public Flux<TransactionEntity> getLastCardTransaction(String cardId);
+
+	public Mono<LastMovementDTO> getLastMovement(String creditId, String cardId);
 
 }
